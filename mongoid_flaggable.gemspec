@@ -10,6 +10,8 @@ Gem::Specification.new do |s|
   s.summary     = "Add and manipulate flags (boolean values) on mongoid models"
   s.description     = "Add and manipulate flags (boolean values) on mongoid models"
 
+  s.license = 'MIT'
+
   s.required_rubygems_version = ">= 1.3.6"
 
   # lol - required for validation
