@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>mongoid_flaggable by mchail</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>mongoid_flaggable</h1>
+        <h2>Lightweight &amp; powerful flagging/tagging system for mongoid</h2>
+        <a href="https://github.com/mchail/mongoid_flaggable" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="mongoid_flaggable---" class="anchor" href="#mongoid_flaggable---"><span class="octicon octicon-link"></span></a>mongoid_flaggable <a href="http://badge.fury.io/rb/mongoid_flaggable"><img src="https://badge.fury.io/rb/mongoid_flaggable.png" alt="Gem Version"></a> <a href="https://codeclimate.com/github/mchail/mongoid_flaggable"><img src="https://codeclimate.com/github/mchail/mongoid_flaggable.png" alt="Code Climate"></a> <a href="https://travis-ci.org/mchail/mongoid_flaggable"><img src="https://travis-ci.org/mchail/mongoid_flaggable.png?branch=master" alt="Build Status"></a>
+</h1>
+
+<p>mongoid_flaggable is a lightweight and powerful way to add flags/tags (boolean values) to your mongoid models.</p>
+
+<h1>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<p>Install directly from rubygems:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">gem</span> <span class="n">install</span> <span class="n">mongoid_flaggable</span>
+</pre></div>
+
+<p>Or if you are using a Gemfile, place this in your Gemfile:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">gem</span> <span class="s1">'mongoid_flaggable'</span>
+</pre></div>
+
+<h1>
+<a name="use-cases" class="anchor" href="#use-cases"><span class="octicon octicon-link"></span></a>Use cases</h1>
+
+<p>This gem was created to give developers an easy way to flag mongoid models with boolean values. Flags are well-suited for temporary boolean values that do not merit the overhead of an additional field on the model and in the database. This includes gradual feature rollouts (whitelisting certain users for experimental features) and temporary metadata useful for analytics. Flags are <em>not</em> well-suited for data you intend to persist on your documents long-term.</p>
+
+<h1>
+<a name="configure-a-model-to-be-flaggable" class="anchor" href="#configure-a-model-to-be-flaggable"><span class="octicon octicon-link"></span></a>Configure a model to be flaggable:</h1>
+
+<p>One line of code is needed to set up a model with mongoid_flaggable.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Book</span>
+    <span class="kp">include</span> <span class="no">Mongoid</span><span class="o">::</span><span class="no">Document</span>
+    <span class="kp">include</span> <span class="no">Mongoid</span><span class="o">::</span><span class="no">Flaggable</span>         <span class="c1">#=&gt; it's this one</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Be sure to run <code>rake db:mongoid:create_indexes</code> after adding mongoid_flaggable to a model. This will create an index on the <code>flag_array</code> field it makes use of.</p>
+
+<h1>
+<a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic usage</h1>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">create</span>
+<span class="n">book</span><span class="o">.</span><span class="n">flags</span>                             <span class="c1">#=&gt; []</span>
+<span class="n">book</span><span class="o">.</span><span class="n">add_flag!</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+<span class="n">book</span><span class="o">.</span><span class="n">flags</span>                             <span class="c1">#=&gt; ["out_of_print"]</span>
+<span class="n">book</span><span class="o">.</span><span class="n">flag?</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>              <span class="c1">#=&gt; true</span>
+<span class="n">book</span><span class="o">.</span><span class="n">flag?</span><span class="p">(</span><span class="ss">:florinese_translation</span><span class="p">)</span>     <span class="c1">#=&gt; false</span>
+<span class="n">book</span><span class="o">.</span><span class="n">remove_flag!</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+<span class="n">book</span><span class="o">.</span><span class="n">flags</span>                             <span class="c1">#=&gt; []</span>
+</pre></div>
+
+<h1>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h1>
+
+<ul>
+<li>All methods accept <code>"strings"</code> or <code>:symbols</code>. The arguments are cast to strings before being used.</li>
+<li>Methods that end in a <code>!</code> will immediately write to the database. Methods without the bang will make updates in memory (if the intention of the method is to update data), but will not persist the changes (i.e. after calling <code>book.add_flag(:out_of_print)</code>, you must call <code>book.save</code> to persist the new flag).</li>
+</ul><h3>
+<a name="instance-methods" class="anchor" href="#instance-methods"><span class="octicon octicon-link"></span></a>Instance Methods</h3>
+
+<p>Add a flag to a specific model <strong>without saving</strong></p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">add_flag</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+</pre></div>
+
+<p>Add a flag to a specific model <strong>and save immediately</strong></p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">add_flag!</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+</pre></div>
+
+<p>Remove a flag from a specific model <strong>without saving</strong></p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">remove_flag</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+</pre></div>
+
+<p>Remove a flag from a specific model <strong>and save immediately</strong></p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">remove_flag!</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+</pre></div>
+
+<p>Clear all flags from a specific model <strong>without saving</strong></p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">clear_flags</span>
+</pre></div>
+
+<p>Clear all flags from a specific model <strong>and save immediately</strong></p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">clear_flags!</span>
+</pre></div>
+
+<p>Get array of flags from a model - guaranteed to return an array or zero or more strings</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">flags</span>   <span class="c1"># =&gt; ["out_of_print"]</span>
+</pre></div>
+
+<p>Test for the presence of a flag</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">flag?</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+</pre></div>
+
+<p>Test for the presence of <strong>any</strong> of multiple flags</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">any_flags?</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">,</span> <span class="ss">:florinese_translation</span><span class="p">)</span>
+</pre></div>
+
+<p>Test for the presence of <strong>all</strong> of multiple flags</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">book</span><span class="o">.</span><span class="n">all_flags?</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">,</span> <span class="ss">:florinese_translation</span><span class="p">)</span>
+</pre></div>
+
+<h3>
+<a name="class-methods" class="anchor" href="#class-methods"><span class="octicon octicon-link"></span></a>Class Methods</h3>
+
+<ul>
+<li>All finders return a <code>Mongoid::Criteria</code> that may be chained with additional clauses (e.g. <code>where</code>, <code>limit</code>, <code>skip</code>, <code>order_by</code>, etc.)</li>
+</ul><p>Retrieve documents with a given flag</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">by_flag</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+</pre></div>
+
+<p>Retrieve documents with <strong>any</strong> of multiple flags</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">by_any_flags</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">,</span> <span class="ss">:florinese_translation</span><span class="p">)</span>
+</pre></div>
+
+<p>Retrieve documents with <strong>all</strong> of multiple flags</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">by_all_flags</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">,</span> <span class="ss">:florinese_translation</span><span class="p">)</span>
+</pre></div>
+
+<p>Get the number of documents with a given flag</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">flag_count</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+</pre></div>
+
+<p>Get the number of documents with <strong>all</strong> of multiple flags</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">flag_count</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">,</span> <span class="ss">:florinese_translation</span><span class="p">)</span>
+</pre></div>
+
+<p>Get an array of all the distinct flags in use on the collection</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">distinct_flags</span>
+</pre></div>
+
+<p>Add a flag to multiple documents matching given criteria</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">bulk_add_flag!</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">,</span> <span class="p">{</span><span class="ss">:last_printed_at</span><span class="o">.</span><span class="n">lt</span> <span class="o">=&gt;</span> <span class="mi">20</span><span class="o">.</span><span class="n">years</span><span class="o">.</span><span class="n">ago</span><span class="p">})</span>
+</pre></div>
+
+<p>Remove a flag from multiple documents matching given criteria</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">bulk_remove_flag!</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">,</span> <span class="p">{</span><span class="n">author_name</span><span class="p">:</span> <span class="s2">"William Goldman"</span><span class="p">})</span>
+</pre></div>
+
+<p>Remove a flag from all documents</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">bulk_remove_flag!</span><span class="p">(</span><span class="ss">:out_of_print</span><span class="p">)</span>
+</pre></div>
+
+<p>Get a sorted frequency hash of all flags used on a collection</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Book</span><span class="o">.</span><span class="n">flag_frequency</span>           <span class="c1">#=&gt; {"out_of_print" =&gt; 20, "florinese_translation" =&gt; 5}</span>
+</pre></div>
+
+<h1>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h1>
+
+<ol>
+<li>Fork it</li>
+<li>Make your changes</li>
+<li>Write/update tests. Run with <code>rake</code>.</li>
+<li>Issue a Pull Request</li>
+</ol><h1>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
+
+<p>MIT. Go nuts.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/mchail/mongoid_flaggable/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/mchail/mongoid_flaggable/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/mchail/mongoid_flaggable"></a> is maintained by <a href="https://github.com/mchail">mchail</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
