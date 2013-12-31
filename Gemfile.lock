@@ -1,0 +1,50 @@
+PATH
+  remote: .
+  specs:
+    mongoid_flaggable (0.0.1)
+      mongoid
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activemodel (3.2.16)
+      activesupport (= 3.2.16)
+      builder (~> 3.0.0)
+    activesupport (3.2.16)
+      i18n (~> 0.6, >= 0.6.4)
+      multi_json (~> 1.0)
+    builder (3.0.4)
+    coderay (1.1.0)
+    diff-lcs (1.2.5)
+    i18n (0.6.9)
+    method_source (0.8.2)
+    mongoid (3.1.6)
+      activemodel (~> 3.2)
+      moped (~> 1.4)
+      origin (~> 1.0)
+      tzinfo (~> 0.3.29)
+    moped (1.5.1)
+    multi_json (1.8.2)
+    origin (1.1.0)
+    pry (0.9.12.4)
+      coderay (~> 1.0)
+      method_source (~> 0.8)
+      slop (~> 3.4)
+    rspec (2.14.1)
+      rspec-core (~> 2.14.0)
+      rspec-expectations (~> 2.14.0)
+      rspec-mocks (~> 2.14.0)
+    rspec-core (2.14.7)
+    rspec-expectations (2.14.4)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.14.4)
+    slop (3.4.7)
+    tzinfo (0.3.38)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  mongoid_flaggable!
+  pry
+  rspec

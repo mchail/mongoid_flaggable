@@ -1,0 +1,48 @@
+module Mongoid
+	module Flaggable
+		module InstanceMethods
+			def add_flag(flag)
+				self.flag_array = [] if flag_array.nil?
+				flag_array << flag.to_s
+				flag_array.uniq!
+			end
+
+			def add_flag!(flag)
+				add_to_set(:flag_array, flag.to_s)
+			end
+
+			def remove_flag(flag)
+				flag_array.delete(flag.to_s)
+			end
+
+			def remove_flag!(flag)
+				pull(:flag_array, flag.to_s)
+			end
+
+			def clear_flags
+				self.flag_array = []
+			end
+
+			def clear_flags!
+				clear_flags
+				save
+			end
+
+			def flags
+				flag_array || []
+			end
+
+			def all_flags?(*p_flags)
+				p_flags = p_flags.flatten.map(&:to_s).uniq.sort
+				(p_flags - flags).empty?
+			end
+			alias_method :flag?, :all_flags?
+			alias_method :flags?, :all_flags?
+
+			def any_flag?(*p_flags)
+				p_flags = p_flags.flatten.map(&:to_s)
+				(flags & p_flags).any?
+			end
+		end
+	end
+end
