@@ -21,7 +21,7 @@ gem 'mongoid_flaggable'
 
 This gem was created to give developers an easy way to flag mongoid models with boolean values. Flags are well-suited for temporary boolean values that do not merit the overhead of an additional field on the model and in the database. This includes gradual feature rollouts (whitelisting certain users for experimental features) and temporary metadata useful for analytics. Flags are *not* well-suited for data you intend to persist on your documents long-term.
 
-# Configure a model to be flaggable:
+# Configure a model to be flaggable
 
 One line of code is needed to set up a model with mongoid_flaggable.
 
