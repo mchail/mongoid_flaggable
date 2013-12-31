@@ -28,7 +28,7 @@ One line of code is needed to set up a model with mongoid_flaggable.
 ```ruby
 class Book
     include Mongoid::Document
-    include Mongoid::Flaggable         #=> it's this one
+    include Mongoid::Flaggable         # it's this one
 end
 ```
 
