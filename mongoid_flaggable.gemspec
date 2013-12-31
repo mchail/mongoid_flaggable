@@ -21,6 +21,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec", "~> 2.14"
   s.add_development_dependency "pry"
   s.add_development_dependency "guard"
+  s.add_development_dependency "guard-rspec"
+  s.add_development_dependency "database_cleaner"
 
   # If you need to check in files that aren't .rb files, add them here
   s.files        = Dir["{lib}/**/*.rb", "bin/*", "LICENSE", "*.md"]

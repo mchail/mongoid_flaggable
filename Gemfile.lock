@@ -17,6 +17,7 @@ GEM
     celluloid (0.15.2)
       timers (~> 1.1.0)
     coderay (1.1.0)
+    database_cleaner (1.2.0)
     diff-lcs (1.2.5)
     ffi (1.9.3)
     formatador (0.2.4)
@@ -26,6 +27,9 @@ GEM
       lumberjack (~> 1.0)
       pry (>= 0.9.12)
       thor (>= 0.18.1)
+    guard-rspec (4.2.3)
+      guard (~> 2.1)
+      rspec (>= 2.14, < 4.0)
     i18n (0.6.9)
     listen (2.4.0)
       celluloid (>= 0.15.2)
@@ -65,7 +69,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  database_cleaner
   guard
+  guard-rspec
   mongoid_flaggable!
   pry
   rspec (~> 2.14)

@@ -12,6 +12,7 @@ module Mongoid
 			end
 
 			def remove_flag(flag)
+				return if flag_array.nil?
 				flag_array.delete(flag.to_s)
 			end
 
@@ -39,10 +40,11 @@ module Mongoid
 			alias_method :flag?, :all_flags?
 			alias_method :flags?, :all_flags?
 
-			def any_flag?(*p_flags)
+			def any_flags?(*p_flags)
 				p_flags = p_flags.flatten.map(&:to_s)
 				(flags & p_flags).any?
 			end
+			alias_method :any_flag?, :any_flags?
 		end
 	end
 end
