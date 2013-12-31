@@ -19,7 +19,7 @@ gem 'mongoid_flaggable'
 
 # Use cases
 
-This gem was created to give developers an easy way to flag mongoid models with boolean values. Flags are well-suited for temporary boolean values that do not merit the overhead of an additional field on the model and in the database. This includes gradual feature rollouts (whitelisting certain users for experimental features) and temporary metadata useful for analytics. Flags are *not* well-suited for data you intend to persisted on your documents long-term.
+This gem was created to give developers an easy way to flag mongoid models with boolean values. Flags are well-suited for temporary boolean values that do not merit the overhead of an additional field on the model and in the database. This includes gradual feature rollouts (whitelisting certain users for experimental features) and temporary metadata useful for analytics. Flags are *not* well-suited for data you intend to persist on your documents long-term.
 
 # Configure a model to be flaggable:
 
@@ -28,7 +28,7 @@ One line of code is needed to set up a model with mongoid_flaggable.
 ```ruby
 class Book
     include Mongoid::Document
-    include Mongoid::Flaggable
+    include Mongoid::Flaggable         #=> it's this one
 end
 ```
 
@@ -87,13 +87,13 @@ book.clear_flags
 Clear all flags from a specific model **and save immediately**
 
 ```ruby
-book.clear_flags
+book.clear_flags!
 ```
 
 Get array of flags from a model - guaranteed to return an array or zero or more strings
 
 ```ruby
-book.flags   # => ['out_of_print']
+book.flags   # => ["out_of_print"]
 ```
 
 Test for the presence of a flag
@@ -157,7 +157,7 @@ Book.distinct_flags
 Add a flag to multiple documents matching given criteria
 
 ```ruby
-Book.bulk_add_flag!(:out_of_print, {:last_printed.lt => 20.years.ago})
+Book.bulk_add_flag!(:out_of_print, {:last_printed_at.lt => 20.years.ago})
 ```
 	
 Remove a flag from multiple documents matching given criteria
@@ -182,7 +182,7 @@ Book.flag_frequency           #=> {"out_of_print" => 20, "florinese_translation"
 
 1. Fork it
 2. Make your changes
-3. Write/update tests
+3. Write/update tests. Run with `rake`.
 4. Issue a Pull Request
 
 # License
