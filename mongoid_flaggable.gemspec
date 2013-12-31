@@ -16,10 +16,11 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = "mongoid_flaggable"
 
   # If you have other dependencies, add them here
-  s.add_dependency "mongoid"#, "~> 1.2"
+  s.add_dependency "mongoid", "~> 3.0"
 
-  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec", "~> 2.14"
   s.add_development_dependency "pry"
+  s.add_development_dependency "guard"
 
   # If you need to check in files that aren't .rb files, add them here
   s.files        = Dir["{lib}/**/*.rb", "bin/*", "LICENSE", "*.md"]
