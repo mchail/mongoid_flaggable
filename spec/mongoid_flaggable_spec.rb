@@ -176,11 +176,11 @@ describe Mongoid::Flaggable do
 			m.flags.should == []
 		end
 
-		it "should not save an unpersisted model when add_flag! is called" do
+		it "should save an unpersisted model when add_flag! is called" do
 			m = unsaved
 			m.persisted?.should be_false
 			m.add_flag!(:flag1)
-			m.persisted?.should be_false
+			m.persisted?.should be_true
 		end
 
 		it "should save a persisted model when add_flag! is called" do

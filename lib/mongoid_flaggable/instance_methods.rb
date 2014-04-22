@@ -8,7 +8,8 @@ module Mongoid
 			end
 
 			def add_flag!(flag)
-				add_to_set(:flag_array, flag.to_s)
+				add_flag(flag)
+				save
 			end
 
 			def remove_flag(flag)
@@ -17,7 +18,8 @@ module Mongoid
 			end
 
 			def remove_flag!(flag)
-				pull(:flag_array, flag.to_s)
+				remove_flag(flag)
+				save
 			end
 
 			def clear_flags
